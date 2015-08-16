@@ -24,6 +24,7 @@ angular.module('Potatr', ['ngMaterial'])
  	$scope.signIn = function(){
     $http({method: "GET", url: $scope.api + "/profile/" + $scope.userId }).
         then(function(response) {
+          //alert(JSON.stringify(response));
           $scope.user = response.data;
         }, function(response) {
           console.log("fetch failed");
@@ -45,9 +46,8 @@ angular.module('Potatr', ['ngMaterial'])
       if(localStorage.potatrUser){
         $scope.user = JSON.parse(localStorage.getItem("potatrUser"));
         $scope.userId = $scope.user.contactId;
-        console.log($scope.user);
       }else{
-        $scope.userId = 1123782705;
+        $scope.userId = 12345;
       }
     } else {
         alert("session storage is needed for this to work");
