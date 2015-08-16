@@ -14,6 +14,7 @@
 	</head>
 
 	<body ng-controller="PotatrController" ng-init="init()" ng-cloak>
+		You are in logged in as {{user.email}}
 		<md-toolbar>
 	      	<h2 class="md-toolbar-tools" layout="row" layout-align="center center">
 	      		<img src="img/logo.png" id="mini-logo" />
@@ -26,14 +27,19 @@
 		          		<ng-pluralize count="contacts.length" when="contactPluralize"></ng-pluralize>
 		          	</md-subheader>
   					<div class="md-3-line business-card" ng-repeat="contact in contacts" layout-align="column" layout-gt-sm="row">
-    					<img ng-src="https://graph.facebook.com/{{contact.facebookId}}/picture?width=100&height=100" class="avatar" alt="{{item.who}}" />
+    					<img ng-src="https://graph.facebook.com/{{contact.userId}}/picture?width=100&height=100" class="avatar" alt="{{item.who}}" />
     					<div class="wrapper" layout="column">
 				          	<span class="contact-name">{{ contact.firstName }}&nbsp;{{contact.lastName}}</span>
 				          	<span class="contact-email">{{ contact.email }}</span>
 				          	<div class="space"></div>
 				          	<span class="contact-department">{{ contact.department }}</span>
 				          	<span class="contact-position">{{ contact.position }}</span>
-				          	<p>added 3 days ago</p>
+				          	<div class="space"></div>
+				          	<span class="contact-position">{{ contact.mobileNumber }}</span>
+				          	<div class="space"></div>
+				          	<span class="contact-position">{{ contact.officeName }}</span>
+				          	<span class="contact-position">{{ contact.officeNumber }}</span>
+				          	<span class="contact-position">{{ contact.officeAddress }}</span>
     					</div>
   					</div>
         		</md-content>

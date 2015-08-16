@@ -94,8 +94,7 @@
 						success: function(data){
 							console.log(data);
 							if(typeof data !== "undefined" && data.length > 0){
-								sessionStorage.potatrUser = data;
-								localStorage.setItem("potatrUser", data);
+								localStorage.potatrUser = JSON.stringify(data);
 								//window.location.href = "index.html";
 							}else{
 								var data = { 
@@ -117,9 +116,8 @@
 									data: JSON.stringify(data),
 									contentType: "application/json",
 									url: url + "/profile/" + response.id,
-									success: function(data){
-										console.log("b");
-										sessionStorage.potatrUser = data;
+									success: function(d){
+										localStorage.setItem("potatrUser", JSON.stringify(data));
 										window.location.href = "index.html";
 									},
 									error: function(err){

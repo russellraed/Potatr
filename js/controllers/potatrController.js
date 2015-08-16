@@ -4,7 +4,6 @@ angular.module('Potatr', ['ngMaterial'])
   $scope.selectedIndex = 0;
  	$scope.user = null;
  	$scope.contacts = [];
-  $scope.userId = 12345;
   $scope.api = "https://potatr-1038.appspot.com/_ah/api/potatr/v1";
 
   $scope.fields = [
@@ -31,16 +30,21 @@ angular.module('Potatr', ['ngMaterial'])
  	}
 
  	$scope.init = function(){
- 		//$scope.signIn();
+ 		
     $scope.initSignIn();
+    $scope.signIn();
     $scope.initContacts();
  	}
 
   $scope.initSignIn = function(){
     if(typeof(Storage) !== "undefined") {
       // Code for localStorage/sessionStorage.
-      if(localStorage.user){
-
+      if(localStorage.potatrUser){
+        $scope.user = JSON.parse(localStorage.getItem("potatrUser"));
+        $scope.userId = $scope.user.contactId;
+        console.log($scope.user);
+      }else{
+        $scope.userId = 12345;
       }
     } else {
         alert("session storage is needed for this to work");
@@ -51,6 +55,7 @@ angular.module('Potatr', ['ngMaterial'])
     $http({method: "GET", url: $scope.api + "/contacts/list/" + $scope.userId }).
         then(function(response) {
           $scope.contacts = response.data.items;
+          console.log($scope.contacts);
           //save contacts in cache
           $scope.cacheContacts($scope.cacheContacts($scope.userId,$scope.contacts));
         }, function(response) {
@@ -164,7 +169,8 @@ angular.module('Potatr', ['ngMaterial'])
           toShare.id = $scope.userId;
           toShare.e = $scope.user.email;
           if(field.share){
-            toShare[field.id];
+            toShare.id = $scope.userId;
+            toShare.e = $scope.user.email;
             if(field.id == "department"){
               toShare.d = $scope.user.department;
             }else if(field.id == "lastName"){
@@ -250,7 +256,8 @@ angular.module('Potatr', ['ngMaterial'])
         officeAddress: result.o,
         officeNumber: result.on
       }
-      $scope.syncContact(contact, contactData);
+      $scope.contacts.push(contactData);
+     // $scope.syncContact(contact, contactData);
 
       $timeout(function () {
         $scope.selectedIndex = 0;
