@@ -3,7 +3,7 @@ angular.module('Potatr', ['ngMaterial'])
 
   $scope.selectedIndex = 0;
  	$scope.user = null;
- 	$scope.contacts = [];
+ 	$scope.contactsList = [];
   $scope.api = "https://potatr-1038.appspot.com/_ah/api/potatr/v1";
 
   $scope.fields = [
@@ -34,6 +34,8 @@ angular.module('Potatr', ['ngMaterial'])
     $scope.initSignIn();
     $scope.signIn();
     $scope.initContacts();
+    $scope.addContact({ "id": "adfad", "e": "russellraed", "f":"russell" });
+    //console.log($scope.contactsList);
  	}
 
   $scope.initSignIn = function(){
@@ -54,15 +56,23 @@ angular.module('Potatr', ['ngMaterial'])
  	$scope.initContacts = function(){
     $http({method: "GET", url: $scope.api + "/contacts/list/" + $scope.userId }).
         then(function(response) {
-          $scope.contacts = response.data.items;
-          console.log($scope.contacts);
+          $scope.contactsList = response.data.items;
+          console.log($scope.contactsList);
           //save contacts in cache
-          $scope.cacheContacts($scope.cacheContacts($scope.userId,$scope.contacts));
+          $scope.cacheContacts($scope.cacheContacts($scope.userId,$scope.contactsList));
+          if(typeof $scope.contactsList === "undefined"){
+            $scope.contactsList = [];
+          }
         }, function(response) {
           console.log("Fetch failed.");
           //try loading contacts from cache instead
-          $scope.contacts = $scope.getContactsFromCache($scope.userId);
+          $scope.contactsList = $scope.getContactsFromCache($scope.userId);
+          if(typeof $scope.contactsList === "undefined"){
+            $scope.contactsList = [];
+          }
         });
+        console.log($scope.contactsList);
+      
   }
 
   $scope.cacheContacts = function(userId,contactList){
@@ -232,6 +242,7 @@ angular.module('Potatr', ['ngMaterial'])
         $scope.status = 'You cancelled the dialog.';
       });
     }
+    
 
     $scope.addContact = function(result){
       var contact = {
@@ -246,6 +257,7 @@ angular.module('Potatr', ['ngMaterial'])
         seeOfficeNumber: typeof result.on !== "undefined" && result.on != null ? "Y" : "N"
       }
       var contactData = {
+
         contactId: result.id,
         firstName: result.f,
         lastName: result.l,
@@ -256,8 +268,10 @@ angular.module('Potatr', ['ngMaterial'])
         officeAddress: result.o,
         officeNumber: result.on
       }
-      $scope.contacts.push(contactData);
-     // $scope.syncContact(contact, contactData);
+      
+      $scope.syncContact(contact, contactData, function(){
+          $scope.contactsList.push(contactData);
+      });
 
       $timeout(function () {
         $scope.selectedIndex = 0;
@@ -265,15 +279,16 @@ angular.module('Potatr', ['ngMaterial'])
       });
     }
 
-    $scope.syncContact = function(contact, contactData){
+
+
+    $scope.syncContact = function(contact, contactData, callback){
       $.ajax({
           method: "PUT",
           data: JSON.stringify(contact),
           contentType: "application/json",
-          url: url + "/contacts/put/" + response.id,
+          url: $scope.api + "/contacts/put/" + $scope.userId,
           success: function(data){
-            $scope.contacts.push(contactData);
-
+            callback();
           },
           error: function(err){
             console.log("error");

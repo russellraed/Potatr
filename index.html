@@ -24,9 +24,9 @@
       		<md-tab label="Contacts" id="contacts-tab">
         		<md-content class="md-padding">
 		          	<md-subheader class="md-no-sticky">
-		          		<ng-pluralize count="contacts.length" when="contactPluralize"></ng-pluralize>
+		          		<ng-pluralize count="contactsList.length" when="contactPluralize"></ng-pluralize>
 		          	</md-subheader>
-  					<div class="md-3-line business-card" ng-repeat="contact in contacts" layout-align="column" layout-gt-sm="row">
+  					<div class="md-3-line business-card" ng-repeat="contact in contactsList track by $index" layout-align="column" layout-gt-sm="row">
     					<img ng-src="https://graph.facebook.com/{{contact.userId}}/picture?width=100&height=100" class="avatar" alt="{{item.who}}" />
     					<div class="wrapper" layout="column">
 				          	<span class="contact-name">{{ contact.firstName }}&nbsp;{{contact.lastName}}</span>
