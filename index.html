@@ -28,7 +28,7 @@
 		          	</md-subheader>
   					<div class="md-3-line business-card" ng-repeat="contact in contactsList track by $index" layout-align="column" layout-gt-sm="row">
     					<img ng-src="https://graph.facebook.com/{{contact.userId}}/picture?width=100&height=100" class="avatar" alt="{{item.who}}" ng-show="contact.userId.length > 0"/>
-    					<img ng-src="https://graph.facebook.com/{{contact.contactId}}/picture?width=100&height=100" class="avatar" alt="{{item.who}}" ng-show="contact.contactId.length > 0"/>
+    					<img ng-src="https://graph.facebook.com/{{contact.contactId}}/picture?width=100&height=100" class="avatar" alt="{{item.who}}" ng-show="contact.userId.length == 0"/>
     					<div class="wrapper" layout="column">
 				          	<span class="contact-name">{{ contact.firstName }}&nbsp;{{contact.lastName}}</span>
 				          	<span class="contact-email">{{ contact.email }}</span>
