@@ -1,13 +1,19 @@
-<html>
+<html manifest="potatr.appcache">
 	<head>
+		<script type="text/javascript" src="js/jquery-1.9.1.min.js" ></script>
 		<script>
 			var facebookId = null;
 			var facebookToken = null;
+			var url = "https://potatr-1038.appspot.com/_ah/api/potatr/v1";
 		  	window.fbAsyncInit = function() {
 		    	FB.init({
 			      	appId      : '941437125898487',
 			      	xfbml      : true,
 			      	version    : 'v2.4'
+		    	});
+
+		    	$("#sign-in-button").click(function(){
+		    		signIn();
 		    	});
 
 		    	FB.getLoginStatus(function(response) {
@@ -37,21 +43,59 @@
 
 			function signIn(){
 	    	  	FB.login(function(response) {
-	        	  	console.log(response);
-					if (response.authResponse) {
-						console.log('Welcome!  Fetching your information.... ');
-						getFacebookInfo();
-					} else {
-						console.log('User cancelled login or did not fully authorize.');
-					}
-				}, 'email');
+		        	  	console.log(response);
+						if (response.authResponse) {
+							console.log('Welcome!  Fetching your information.... ');
+							getFacebookInfo();
+						} else {
+							console.log('User cancelled login or did not fully authorize.');
+						}
+					}, 
+					{ scope: 'email' }
+				);
 	      	}
 
 	      	function getFacebookInfo(){
 				FB.api('/me?fields=email,gender,last_name,first_name,name', function(response) {
 					console.log(response);
 					hideAllSteps();
-					$("#facebook-logged-in").fadeIn();
+
+					$.ajax({
+						method: "GET",
+						url: url + "/profile/12345",
+						success: function(data){
+							console.log(data);
+
+							/*
+							var data = { 
+								"id": response.id,
+								"email": response.email, 
+								"firstName": response.first_name, 
+								"lastName": response.last_name, 
+								"position": "", 
+								"department": "", 
+								"mobileNumber": "", 
+								"officeNumber": "", 
+								"officeAddress": "" 
+							};
+							console.log(data);
+
+							$.ajax({
+								method: "PUT",
+								data: data,
+								url: "https://potatr-1038.appspot.com/_ah/api/potatr/v1/profile/" + response.id,
+								success: function(data){
+									console.log(data)
+									sessionStorage.user = data;
+									window.location.href = "index.html";
+								}
+							});*/
+						},
+						error: function(err){
+
+						}
+					});
+
 				});
 			}
 
@@ -68,17 +112,7 @@
 		<div id="facebook-logged-out" layout="column" layout-align="center center" style="display: none;">
 			<h2>Sign In to Potatr</h2>
 			<p>You need to Sign In using Facebook to continue.</p>
-			<a href="javascript:void(0)" id="sign-in-button" class="button x blue push">Sign In Using Facebook</a>
-		</div>
-		
-		<div id="facebook-logged-in" layout="column" layout-align="center center" style="display:none;">
-			<span class="double-space"></span>
-			<h5>Is this you?</h5>
-			<span class="facebook-name"></span>
-			<div class="facebook-photo-wrapper"></div>
-			<span class="double-space"></span> 
-			<a href="javascript:void(0)" id="yes-continue">Yes, continue.</a>
-			<a href="javascript:void(0)" id="someone-else">Sign in as someone else</a>
+			<a href="javascript:void(0)" id="sign-in-button" class="button x blue push">Sign In</a>
 		</div>
 	</body>
 </html>
