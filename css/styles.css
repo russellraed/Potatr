@@ -60,11 +60,8 @@ md-grid-list md-grid-tile figure{
 	font-size: 12px;
     border: solid 1px gainsboro;
     margin: 5px;
-    padding: 10px 5px;
-    line-height: 0px;
     text-transform: none;
     font-weight: 400;
-    min-height: 0;
 }
 .md-subhead, md-list-item.md-2-line .md-list-item-text h3, md-list-item.md-2-line>.md-no-style .md-list-item-text h3, md-list-item.md-3-line .md-list-item-text h3, md-list-item.md-3-line>.md-no-style .md-list-item-text h3{
 	font-size: 22px;
@@ -153,4 +150,10 @@ md-checkbox .md-label span.shareable-label{
 	color: white;
 	text-align: center;
 	padding: 30px;
+}
+.logged-in-as{
+	font-size: 14px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #D6E38D;
 }

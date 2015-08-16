@@ -14,8 +14,8 @@
 	</head>
 
 	<body ng-controller="PotatrController" ng-init="init()" ng-cloak>
-		You are in logged in as {{user.email}}
 		<md-toolbar>
+			<span class="logged-in-as">You are logged in as {{user.email}}</span>
 	      	<h2 class="md-toolbar-tools" layout="row" layout-align="center center">
 	      		<img src="img/logo.png" id="mini-logo" />
 	      	</h2>
@@ -41,6 +41,9 @@
 				          	<span class="contact-position">{{ contact.officeName }}</span>
 				          	<span class="contact-position">{{ contact.officeNumber }}</span>
 				          	<span class="contact-position">{{ contact.officeAddress }}</span>
+				          	<span class="divider"></div>
+				          	<md-button class="below-link"><i class="fa fa-envelope"></i></md-button>
+				          	<md-button class="below-link"><i class="fa fa-trash"></i></md-button>
     					</div>
   					</div>
         		</md-content>
