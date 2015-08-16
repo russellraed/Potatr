@@ -173,9 +173,9 @@ angular.module('Potatr', ['ngMaterial'])
     }
 
     $scope.contactPluralize = {
-      0: 'No Potatoes',
-      one: '1 Potatoe',
-      other: '{} Potatoes'
+      0: 'No Potatrs',
+      one: '1 Potatr',
+      other: '{} Potatrs'
     }
 
     $scope.showContact = function(ev, contact){
