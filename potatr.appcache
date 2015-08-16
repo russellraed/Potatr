@@ -1,6 +1,7 @@
 CACHE MANIFEST
-#8
 
+index.html
+login.html
 img/logo.png
 
 http://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css

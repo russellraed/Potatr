@@ -1,6 +1,7 @@
 angular.module('Potatr', ['ngMaterial'])
  .controller('PotatrController', function($scope, $http, $mdDialog, $mdToast, $timeout, $mdBottomSheet) {
 
+  $scope.contactAdded = false;
   $scope.selectedIndex = 0;
  	$scope.user = null;
  	$scope.contactsList = [];
@@ -23,6 +24,7 @@ angular.module('Potatr', ['ngMaterial'])
  	$scope.signIn = function(){
     $http({method: "GET", url: $scope.api + "/profile/" + $scope.userId }).
         then(function(response) {
+          //alert(JSON.stringify(response));
           $scope.user = response.data;
         }, function(response) {
           console.log("fetch failed");
@@ -34,7 +36,7 @@ angular.module('Potatr', ['ngMaterial'])
     $scope.initSignIn();
     $scope.signIn();
     $scope.initContacts();
-    $scope.addContact({ "id": "adfad", "e": "russellraed", "f":"russell" });
+    //$scope.addContact({ "id": "adfad", "e": "russellraed", "f":"russell" });
     //console.log($scope.contactsList);
  	}
 
@@ -44,7 +46,6 @@ angular.module('Potatr', ['ngMaterial'])
       if(localStorage.potatrUser){
         $scope.user = JSON.parse(localStorage.getItem("potatrUser"));
         $scope.userId = $scope.user.contactId;
-        console.log($scope.user);
       }else{
         $scope.userId = 12345;
       }
@@ -156,8 +157,11 @@ angular.module('Potatr', ['ngMaterial'])
         QCodeDecoder().decodeFromVideo(video, function(er,res){
           if(res.length > 0){
             $("#result").html(res);
-            $scope.addContact(eval("(" + res + ")"));
-
+            if(!$scope.contactAdded){
+              $scope.addContact(eval("(" + res + ")"));  
+            }
+            
+            $scope.contactAdded = true;
           }
         });
     }
@@ -165,6 +169,7 @@ angular.module('Potatr', ['ngMaterial'])
     $scope.$watch('selectedIndex', function(current, old){
       //$scope.selected = tabs[current];
       if($scope.selectedIndex == 1){
+        $scope.contactAdded = false;
         $scope.initScanning();
       }else if($scope.selectedIndex == 2){
         $scope.initSharing();
@@ -257,7 +262,6 @@ angular.module('Potatr', ['ngMaterial'])
         seeOfficeNumber: typeof result.on !== "undefined" && result.on != null ? "Y" : "N"
       }
       var contactData = {
-
         contactId: result.id,
         firstName: result.f,
         lastName: result.l,
@@ -270,6 +274,7 @@ angular.module('Potatr', ['ngMaterial'])
       }
       
       $scope.syncContact(contact, contactData, function(){
+          //contactData.userId = contact.contactId;
           $scope.contactsList.push(contactData);
       });
 
