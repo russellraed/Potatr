@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html ng-app="Potatr" >
+	<head>  
+	    <title>Potatr</title>
+	    
+	    <link rel="stylesheet" href="css/normalize.css" type="text/css">
+		<link href="css/roboto.css" rel="stylesheet" type="text/css">
+	    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css">
+    	<link rel="stylesheet" href="packages/font-awesome/css/font-awesome.min.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link href="css/styles.css" rel="stylesheet">
+
+    	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
+    	<meta name="viewport" content="initial-scale=1" />
+	    <script type="text/javascript" src="js/jquery-1.9.1.min.js" ></script>
+	</head>
+
+	<body ng-controller="PotatrController" ng-init="init()" ng-cloak>
+		<!--
+		<md-content flex layout="column" id="login-view" layout="column" layout-align="center center" ng-hide="user != null">
+			<h1 id="splash-title">Potatr</h1>
+			<span id="splash-tagline">been here since 2015</span>
+			<img src="img/potatr.gif" id="splash-image"/>
+			<div layout="row" class="button-container">
+				<md-button ng-click="signIn()">Sign In</md-button>
+				<md-button>Sign Up</md-button>
+			</div>
+		</md-content>
+
+		<div id="menu-container">
+			<md-button class="md-fab" aria-label="Menu" ng-click="showGridBottomSheet($event)">
+        	</md-button>
+		</div>
+		<md-content flex layout="column" id="app-view" layout="column" ng-hide="user == null">
+			<md-grid-list
+        		md-cols-gt-md="8" md-cols-sm="3" md-cols-md="8"
+        		md-row-height-gt-md="1:1" md-row-height="4:3"
+        		md-gutter-gt-md="0px" md-gutter-gt-sm="8px" md-gutter="4px">
+      			<md-grid-tile
+          			ng-repeat="contact in contacts"
+          			ng-style="{
+          				'background': contact.color
+          			}"
+          			md-colspan-gt-sm="{{contact.colspan}}"
+          			md-rowspan-gt-sm="{{contact.rowspan}}">
+          			<img src="https://graph.facebook.com/{{contact.facebookId}}/picture?width=100&height=100" class="contactAvatar"/>
+      				<md-grid-tile-footer><h3>{{contact.firstName}}</h3></md-grid-tile-footer>
+      			</md-grid-tile>
+    		</md-grid-list>
+
+    		<div id="qrcode"></div>
+		</md-content>-->
+		<h1>Result: <span id="result"></span></h1>
+		<video id="video" width="640" height="480" autoplay></video>
+		<canvas id="canvas" width="640" height="480"></canvas>
+		
+		<!-- Angular Material Dependencies -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+
+	    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.js"></script>
+	    <script type="text/javascript" src="js/controllers/potatrController.js" ></script>
+
+	    <!-- QR Code -->
+	    <script type="text/javascript" src="packages/qrcodejs/qrcode.min.js" ></script>
+	    <script type="text/javascript" src="packages/qcode-decoder/build/qcode-decoder.min.js" ></script>
+	    <script>
+	    	/*
+	    	$(document).ready(function(){
+	$('#reader').html5_qrcode(function(data){
+			$('#read').html(data);
+		},
+		function(error){
+			$('#read_error').html(error);
+		}, function(videoError){
+			$('#vid_error').html(videoError);
+		}
+	);
+});*/
+// Put event listeners into place
+var context;
+window.addEventListener("DOMContentLoaded", function() {
+	// Grab elements, create settings, etc.
+	var canvas = document.getElementById("canvas"),
+		context = canvas.getContext("2d"),
+		video = document.getElementById("video"),
+		errBack = function(error) {
+			console.log("Video capture error: ", error.code); 
+		};
+
+	// Put video listeners into place
+	
+	MediaStreamTrack.getSources(function(sourceInfos) {
+	  var audioSource = null;
+	  var videoSource = null;
+
+	  for (var i = 0; i != sourceInfos.length; ++i) {
+	    var sourceInfo = sourceInfos[i];
+	    if (sourceInfo.kind === 'audio') {
+	      alert(sourceInfo.id + sourceInfo.label + 'microphone');
+
+	      audioSource = sourceInfo.id;
+	    } else if (sourceInfo.kind === 'video') {
+	      alert(sourceInfo.id+sourceInfo.label + 'camera');
+	      videoSource = sourceInfo.id;
+	    } else {
+	      alert('Some other kind of source: ' + sourceInfo);
+	    }
+	  }
+
+	  sourceSelected(audioSource, videoSource);
+	});
+
+	function sourceSelected(audioSource, videoSource) {
+		  var constraints = {
+		    video: {
+		      optional: [{sourceId: videoSource}]
+		    }
+		  };
+
+		if(navigator.getUserMedia) { // Standard
+			navigator.getUserMedia(constraints, function(stream) {
+				video.src = stream;
+				video.play();
+			}, errBack);
+		} else if(navigator.webkitGetUserMedia) { // WebKit-prefixed
+			navigator.webkitGetUserMedia(constraints, function(stream){
+				video.src = window.webkitURL.createObjectURL(stream);
+				video.play();
+			}, errBack);
+		}
+		else if(navigator.mozGetUserMedia) { // Firefox-prefixed
+			navigator.mozGetUserMedia(constraints, function(stream){
+				video.src = window.URL.createObjectURL(stream);
+				video.play();
+			}, errBack);
+		}
+	}
+
+	QCodeDecoder().decodeFromVideo(video, function(er,res){
+    	$("#result").html(res);
+  	});
+/*
+	document.getElementById("snap").addEventListener("click", function() {
+		context.drawImage(video, 0, 0, 640, 480);
+	});*/
+}, false);
+
+	    </script>
+	</body>
+</html>
