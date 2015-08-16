@@ -86,3 +86,46 @@ md-toolbar.md-default-theme{
 	background: white;
 	padding: 30px;
 }
+.business-card{
+	border: Solid 1px gainsboro;
+    margin-bottom: 20px;
+    padding: 22px;
+    box-shadow: 1px 1px 10px whitesmoke;
+}
+#what-to-share{
+	width: 100%;
+	margin-top: 50px;
+	background: hsl(69, 61%, 72%);
+	padding: 24px;
+}
+md-checkbox .md-label span.shareable-value{
+	font-size: 18px;
+	margin-left: 22px;
+}
+md-checkbox .md-label span.shareable-label{
+	font-size: 14px;
+	margin-left: 22px;
+	font-weight: 600;
+}
+.avatar{
+	border-radius: 50%;
+	width: 120px;
+	height: 120px;
+}
+.wrapper{
+	padding: 20px;
+}
+.contact-name{
+	margin: 0;
+	font-size: 26px;
+	font-weight: 300;
+}
+.contact-email{
+	margin: 5px 0 10px 0;
+	font-size: 16px;
+	font-weight: 500;
+	color: #563636;
+}
+.contact-department{
+	
+}
