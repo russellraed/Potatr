@@ -1,5 +1,13 @@
-<html>
+<html manifest="potatr-nocache.appcache">
 	<head>
+		<link rel="stylesheet" href="css/normalize.css" type="text/css">
+		<link href="css/roboto.css" rel="stylesheet" type="text/css">
+	    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css">
+    	<link rel="stylesheet" href="packages/font-awesome/css/font-awesome.min.css">
+		<link href="css/styles.css" rel="stylesheet">
+
+    	<meta name="viewport" content="initial-scale=1" />
+
 		<script type="text/javascript" src="js/jquery-1.9.1.min.js" ></script>
 		<script>
 			var facebookId = null;
@@ -73,8 +81,13 @@
 	      		$("#logging-you-in").fadeIn();
 				FB.api('/me?fields=email,gender,last_name,first_name,name', function(response) {
 					console.log(response);
-					hideAllSteps();
+					$("#facebook-logged-out").hide();
+					$("#sign-in-circle").fadeOut();
 
+					setTimeout(function() {
+						$("#logging-you-in").fadeIn();	
+					}, 3000);
+					
 					$.ajax({
 						method: "GET",
 						url: url + "/profile/" + response.id,
@@ -83,7 +96,7 @@
 							if(typeof data !== "undefined" && data.length > 0){
 								sessionStorage.potatrUser = data;
 								localStorage.setItem("potatrUser", data);
-								window.location.href = "index.html";
+								//window.location.href = "index.html";
 							}else{
 								var data = { 
 									"contactId": response.id,
@@ -103,9 +116,9 @@
 									method: "PUT",
 									data: JSON.stringify(data),
 									contentType: "application/json",
-									url: "https://potatr-1038.appspot.com/_ah/api/potatr/v1/profile/" + response.id,
+									url: url + "/profile/" + response.id,
 									success: function(data){
-										console.log(data)
+										console.log("b");
 										sessionStorage.potatrUser = data;
 										window.location.href = "index.html";
 									},
@@ -131,15 +144,34 @@
 				fjs.parentNode.insertBefore(js, fjs);
 			}(document, 'script', 'facebook-jssdk'));
 		</script>
+		<Style>
+			body{
+				background-color: #D6E38D;
+			}
+			body *, html *{
+				font-family: "Roboto", sans-serif;
+				font-weight: 300;
+			}
+		</style>
 	</head>
-	<body>
+	<body layout="column" layout-align="center center">
+
+		<div id="sign-in-circle" layout="column" layout-align="center center">
+			<img id="sign-in-logo" src="img/logo-2.png" />
+		</div>	
 		<div id="facebook-logged-out" layout="column" layout-align="center center" style="display: none;">
-			<h2>Sign In to Potatr</h2>
-			<p>You need to Sign In using Facebook to continue.</p>
 			<a href="javascript:void(0)" id="sign-in-button" class="button x blue push">Sign In</a>
 		</div>
 		<div id="logging-you-in" layout="column" layout-align="center center" style="display: none;">
-			<h2>Signing You In to Potatr</h2>
+			<h2>Hold on.</h2>
+			<span>Logging you in. Just potate while you wait.</span>
 		</div>
+		
+		<!-- Angular Material Dependencies -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+	    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+
+	    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.js"></script>
 	</body>
 </html>
