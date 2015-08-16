@@ -139,6 +139,7 @@ angular.module('Potatr', ['ngMaterial'])
         var toShare = {};
         angular.forEach($scope.fields, function(field){
           if(field.share){
+            toShare[field.id]
             if(field.id == "department"){
               toShare.d = $scope.user.department;
             }else if(field.id == "email"){
