@@ -15,8 +15,7 @@ angular.module('Potatr', ['ngMaterial'])
     { label: "Position", id: "position", variable: "p", share: true },
     { label: "Department", id: "department", variable: "d", share: true },    
     { label: "Office Address", id: "officeAddress", variable: "o", share: true },
-    { label: "Office Number", id: "officeNumber", variable: "on", share: true },
-    { label: "Facebook", id: "facebookId", variable: "fb", share: true }
+    { label: "Office Number", id: "officeNumber", variable: "on", share: true }
   ];
 
 	//UI Components
@@ -138,12 +137,11 @@ angular.module('Potatr', ['ngMaterial'])
 
         var toShare = {};
         angular.forEach($scope.fields, function(field){
+          toShare.id = $scope.userId;
+          toShare.e = $scope.user.email;
           if(field.share){
-            
             if(field.id == "department"){
               toShare.d = $scope.user.department;
-            }else if(field.id == "email"){
-              toShare.e = $scope.user.email;
             }else if(field.id == "lastName"){
               toShare.f = $scope.user.firstName;
             }else if(field.id == "mobileNumber"){
@@ -154,8 +152,6 @@ angular.module('Potatr', ['ngMaterial'])
               toShare.on = $scope.user.officeNumber;
             }else if(field.id == "position"){
               toShare.p = $scope.user.position;
-            }else if(field.id == "facebook"){
-              toShare.fb = $scope.user.facebookId;
             }
           }
         });
@@ -208,19 +204,50 @@ angular.module('Potatr', ['ngMaterial'])
 
     $scope.addContact = function(result){
       var contact = {
+        contactId: result.id,
+        seeFirstName: typeof result.f !== "undefined" && result.f != null ? "Y" : "N",
+        seeLastName: typeof result.l !== "undefined" && result.l != null ? "Y" : "N",
+        seeEmail: typeof result.e !== "undefined" && result.e != null ? "Y" : "N",
+        seeMobileNumber: typeof result.m !== "undefined" && result.m != null ? "Y" : "N",
+        seePosition: typeof result.p !== "undefined" && result.p != null ? "Y" : "N",
+        seeDepartment: typeof result.d !== "undefined" && result.d != null ? "Y" : "N",
+        seeOfficeAddress: typeof result.o !== "undefined" && result.o != null ? "Y" : "N",
+        seeOfficeNumber: typeof result.on !== "undefined" && result.on != null ? "Y" : "N"
+      }
+      var contactData = {
+        contactId: result.id,
         firstName: result.f,
         lastName: result.l,
         email: result.e,
-        contactNumber: result.c,
-        facebook: result.fb
+        mobileNumber: result.m,
+        position: result.p,
+        department: result.d,
+        officeAddress: result.o,
+        officeNumber: result.on
       }
-      $scope.contacts.push(contact);
+      $scope.syncContact(contact, contactData);
 
       $timeout(function () {
         $scope.selectedIndex = 0;
         $scope.showSimpleToast("Potato added!");
       });
     }
+
+    $scope.syncContact = function(contact, contactData){
+      $.ajax({
+          method: "PUT",
+          data: JSON.stringify(contact),
+          contentType: "application/json",
+          url: url + "/contacts/put/" + response.id,
+          success: function(data){
+            $scope.contacts.push(contactData);
+
+          },
+          error: function(err){
+            console.log("error");
+          }
+        });
+    }    
 
     $scope.toastPosition = {
       bottom: false,
