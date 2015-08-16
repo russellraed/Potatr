@@ -1,6 +1,6 @@
 angular.module('Potatr', ['ngMaterial'])
  .controller('PotatrController', function($scope, $http, $mdDialog, $mdToast, $timeout, $mdBottomSheet) {
-  
+
   $scope.selectedIndex = 0;
  	$scope.user = null;
  	$scope.contacts = [];
@@ -13,7 +13,7 @@ angular.module('Potatr', ['ngMaterial'])
     { label: "Email", id: "email", variable: "e", share: true },
     { label: "Mobile Number", id: "mobileNumber", variable: "m", share: true },
     { label: "Position", id: "position", variable: "p", share: true },
-    { label: "Department", id: "department", variable: "d", share: true },    
+    { label: "Department", id: "department", variable: "d", share: true },
     { label: "Office Address", id: "officeAddress", variable: "o", share: true },
     { label: "Office Number", id: "officeNumber", variable: "on", share: true }
   ];
@@ -39,8 +39,8 @@ angular.module('Potatr', ['ngMaterial'])
   $scope.initSignIn = function(){
     if(typeof(Storage) !== "undefined") {
       // Code for localStorage/sessionStorage.
-      if(sessionStorage.user){
-        
+      if(localStorage.user){
+
       }
     } else {
         alert("session storage is needed for this to work");
@@ -51,9 +51,33 @@ angular.module('Potatr', ['ngMaterial'])
     $http({method: "GET", url: $scope.api + "/contacts/list/" + $scope.userId }).
         then(function(response) {
           $scope.contacts = response.data.items;
+          //save contacts in cache
+          $scope.cacheContacts($scope.cacheContacts($scope.userId,$scope.contacts));
         }, function(response) {
-          console.log("fetch failed");
-      });
+          console.log("Fetch failed.");
+          //try loading contacts from cache instead
+          $scope.contacts = $scope.getContactsFromCache($scope.userId);
+        });
+  }
+
+  $scope.cacheContacts = function(userId,contactList){
+    if(typeof(Storage) !== "undefined") {
+      if(userId){
+        localStorage["potatr.contacts."+userId] = JSON.stringify(contactList);
+      }
+    } else {
+        alert("Local storage is needed for this to work.");
+    }
+  }
+
+  $scope.getContactsFromCache = function(userId){
+    if(typeof(Storage) !== "undefined") {
+      // Code for localStorage/sessionStorage.
+      console.log("Using cached contacts.")
+      return JSON.parse(localStorage["potatr.contacts."+userId]);
+    } else {
+        alert("Local storage is needed for this to work.");
+    }
   }
 
   	$scope.randomColor = function() {
@@ -65,11 +89,11 @@ angular.module('Potatr', ['ngMaterial'])
             context = canvas.getContext("2d"),
             video = document.getElementById("video"),
             errBack = function(error) {
-              console.log("Video capture error: ", error.code); 
+              console.log("Video capture error: ", error.code);
             };
 
         // Put video listeners into place
-  
+
         MediaStreamTrack.getSources(function(sourceInfos) {
             var audioSource = null;
             var videoSource = null;
@@ -140,6 +164,7 @@ angular.module('Potatr', ['ngMaterial'])
           toShare.id = $scope.userId;
           toShare.e = $scope.user.email;
           if(field.share){
+            toShare[field.id];
             if(field.id == "department"){
               toShare.d = $scope.user.department;
             }else if(field.id == "lastName"){
@@ -247,7 +272,7 @@ angular.module('Potatr', ['ngMaterial'])
             console.log("error");
           }
         });
-    }    
+    }
 
     $scope.toastPosition = {
       bottom: false,
